@@ -55,8 +55,6 @@ def main():
         sys.stderr.write(F"ERROR: invalid file path > {ConfigPath}\n")
         sys.exit(1)
 
-    Window.finalize()
-
     while True:
         event, values = Window.read()
 
@@ -259,6 +257,7 @@ def configure(path):
         ])
 
     Window.layout(layout)
+    Window.finalize()
 
     return
 
