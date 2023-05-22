@@ -1,0 +1,60 @@
+{
+    "norm": 10,
+    "items": [
+        {
+            "tag": "レポート体裁",
+            "items": [
+                {
+                    "tag": "構成と図表の活用",
+                    "alloc": 2,
+                    "default": 1
+                }
+            ]
+        },
+        {
+            "tag": "科学的記述",
+            "items": [
+                {
+                    "tag": "単位と有効数字",
+                    "alloc": 2,
+                    "default": 1
+                }
+            ]
+        },
+        {
+            "tag": "データ",
+            "items": [
+                {
+                    "tag": "確度と精度",
+                    "alloc": 2,
+                    "default": 1
+                }
+            ]
+        },
+        {
+            "tag": "考察",
+            "items": [
+                {
+                    "tag": "誤差評価",
+                    "alloc": 2,
+                    "default": 1
+                },
+                {
+                    "tag": "分析",
+                    "alloc": 2,
+                    "default": 1
+                }
+            ]
+        },
+        {
+            "tag": "減点項目",
+            "items": [
+                {
+                    "tag": "提出遅れ",
+                    "alloc": -2,
+                    "step" : 2
+                }
+            ]
+        }
+    ]
+}
