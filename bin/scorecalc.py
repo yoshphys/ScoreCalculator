@@ -18,12 +18,13 @@ import pyperclip
 
 sg.theme("SystemDefault")
 # Window = sg.Window("score calculator", return_keyboard_events=True)
-Window = sg.Window("score calculator")
+Window = sg.Window("score calculator", resizable=True, finalize=True)
 
 TextFont1  = ("Arial", 15)
 TextFont2  = ("Arial", 12)
 TextFont3  = ("Menlo", 15)
 ButtonFont = ("Arial", 11)
+OffsetUnit = 8
 
 #__________________________________________________
 # global variables
@@ -153,6 +154,7 @@ def configure(path):
         dump_value_error("norm", data["norm"], ["root"])
         sys.exit(1)
 
+    flseparator = False
     for item in data["items"]:
 
         if not "tag" in item.keys():
@@ -160,6 +162,11 @@ def configure(path):
             sys.exit(1)
 
         tag = item["tag"]
+
+        if flseparator:
+            bodylayout.append([sg.HSeparator(color="gray")])
+        else:
+            flseparator = True
 
         submax = 0
         sublayout = list()
@@ -197,20 +204,26 @@ def configure(path):
             defScore += default
             MaxScore += valmax
 
-            sublayout.append([
-                sg.Text(F"{elemtag} ({alloc})",
-                        size=(20, 1), pad=((4,0), (19,0)), font=TextFont1),
-                sg.Button("min", key=F"-BtnMin{index}-",
-                          pad=((0,0), (19,0)), font=ButtonFont),
-                sg.Slider(range=(valmin, valmax), default_value=default, resolution=step, orientation='h',
-                          key=F"-Sldr{index}-", enable_events=True,
-                          font=TextFont2),
-                sg.Button("max", key=F"-BtnMax{index}-",
-                          pad=((0,0), (19,0)), font=ButtonFont),
-                sg.Spin(values=vals, initial_value=default,
-                        key=F"-Spn{index}-", enable_events=True, bind_return_key=True,
-                        size=(3, 1), pad=((4,4), (19,0)), font=TextFont1),
-                ])
+            itag = sg.Column([[sg.Text(F"{' ' * OffsetUnit}- {elemtag} ({alloc})", font=TextFont1)]],
+                             vertical_alignment='bottom')
+            ibtn1 = sg.Column([[sg.Button("min", key=F"-BtnMin{index}-",
+                                          font=ButtonFont)]],
+                              vertical_alignment='bottom')
+            isldr = sg.Column([[sg.Slider(range=(valmin, valmax), default_value=default,
+                                          resolution=step, orientation='h',
+                                          key=F"-Sldr{index}-", enable_events=True,
+                                          font=TextFont2)]],
+                              vertical_alignment='bottom')
+            ibtn2 = sg.Column([[sg.Button("max", key=F"-BtnMax{index}-",
+                                          font=ButtonFont)]],
+                              vertical_alignment='bottom')
+            ispn = sg.Column([[sg.Spin(values=vals, initial_value=default,
+                                       key=F"-Spn{index}-", enable_events=True, bind_return_key=True,
+                                       font=TextFont1)]],
+                             vertical_alignment='bottom')
+
+            sublayout.append([itag, sg.Push(), ibtn1, isldr, ibtn2, ispn])
+
 
             Cont.append({"tag": F"{tag}/{elemtag}", "default": default, "value": default, "min": valmin, "max": valmax})
 
@@ -219,25 +232,31 @@ def configure(path):
 
             index += 1
 
-        bodylayout.append([sg.Frame(F"{tag} ({submax})", sublayout, font=TextFont2)])
+        bodylayout.append([sg.Text(F"- {tag} ({submax})", font=TextFont1)])
+        bodylayout.extend(sublayout)
 
     normval = defScore / MaxScore * NormFactor
     ratio   = defScore / MaxScore * 100
 
-    bodylayout.extend([
-        [sg.Text("TOTAL SCORE", font=TextFont1), sg.Push(),
-         sg.Text(F"{defScore} / {MaxScore}", key="-TxtSum-", font=TextFont3)],
-        # size=(13, 1), pad=((265, 0), (0, 0)), font=TextFont3, justification='r')],
-        [sg.Text("SCORING RATE", font=TextFont1), sg.Push(),
-         sg.Text(F"{ratio:.2f} %", key="-TxtRatio-", font=TextFont3)],
-        #size=(7, 1), pad=((310, 0), (0, 0)), font=TextFont3, justification='r')],
-        [sg.Text("NORMALIZED SCORE", font=TextFont1), sg.Push(),
-         sg.Text(F"{normval:.2f} / {NormFactor}", key="-TxtNorm-", font=TextFont3)]
-        # size=(13, 1), pad=((215, 0), (0, 0)), font=TextFont3, justification='r')]
-        ])
+    # bodylayout.extend([
+    #     [sg.Text("TOTAL SCORE", font=TextFont1), sg.Push(),
+    #      sg.Text(F"{defScore} / {MaxScore}", key="-TxtSum-", font=TextFont3)],
+    #     [sg.Text("SCORING RATE", font=TextFont1), sg.Push(),
+    #      sg.Text(F"{ratio:.2f} %", key="-TxtRatio-", font=TextFont3)],
+    #     [sg.Text("NORMALIZED SCORE", font=TextFont1), sg.Push(),
+    #      sg.Text(F"{normval:.2f} / {NormFactor}", key="-TxtNorm-", font=TextFont3)]
+    #     ])
 
     layout.extend([
+        # [sg.Frame("", [[sg.Column(bodylayout, scrollable=True, vertical_scroll_only=True)]])],
         [sg.Frame("", bodylayout)],
+        [sg.Text("TOTAL SCORE", font=TextFont1), sg.Push(),
+         sg.Text(F"{defScore} / {MaxScore}", key="-TxtSum-", font=TextFont3)],
+        [sg.Text("SCORING RATE", font=TextFont1), sg.Push(),
+         sg.Text(F"{ratio:.2f} %", key="-TxtRatio-", font=TextFont3)],
+        [sg.Text("NORMALIZED SCORE", font=TextFont1), sg.Push(),
+         sg.Text(F"{normval:.2f} / {NormFactor}", key="-TxtNorm-", font=TextFont3)],
+        [sg.HSeparator(color="gray")],
         [# sg.Button("calculate", key="-BtnCalc-", bind_return_key=True),
          sg.Button("COPY TO CLIPBOARD", key="-BtnCpy-", font=ButtonFont),
          sg.Button("CLEAR", key="-BtnClr-", font=ButtonFont),
