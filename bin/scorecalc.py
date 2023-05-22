@@ -204,7 +204,8 @@ def configure(path):
             defScore += default
             MaxScore += valmax
 
-            itag = sg.Column([[sg.Text(F"{' ' * OffsetUnit}- {elemtag} ({alloc})", font=TextFont1)]],
+            itag = sg.Column([[sg.Text(F"- {elemtag} ({alloc})",
+                                       pad=((OffsetUnit,0),(0,OffsetUnit)), font=TextFont1)]],
                              vertical_alignment='bottom')
             ibtn1 = sg.Column([[sg.Button("min", key=F"-BtnMin{index}-",
                                           font=ButtonFont)]],
@@ -237,15 +238,6 @@ def configure(path):
 
     normval = defScore / MaxScore * NormFactor
     ratio   = defScore / MaxScore * 100
-
-    # bodylayout.extend([
-    #     [sg.Text("TOTAL SCORE", font=TextFont1), sg.Push(),
-    #      sg.Text(F"{defScore} / {MaxScore}", key="-TxtSum-", font=TextFont3)],
-    #     [sg.Text("SCORING RATE", font=TextFont1), sg.Push(),
-    #      sg.Text(F"{ratio:.2f} %", key="-TxtRatio-", font=TextFont3)],
-    #     [sg.Text("NORMALIZED SCORE", font=TextFont1), sg.Push(),
-    #      sg.Text(F"{normval:.2f} / {NormFactor}", key="-TxtNorm-", font=TextFont3)]
-    #     ])
 
     layout.extend([
         # [sg.Frame("", [[sg.Column(bodylayout, scrollable=True, vertical_scroll_only=True)]])],
