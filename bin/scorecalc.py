@@ -220,7 +220,7 @@ def configure(path):
                               vertical_alignment='bottom')
             ispn = sg.Column([[sg.Spin(values=vals, initial_value=default,
                                        key=F"-Spn{index}-", enable_events=True, bind_return_key=True,
-                                       font=TextFont1)]],
+                                       size=(2,1), font=TextFont1)]],
                              vertical_alignment='bottom')
 
             sublayout.append([itag, sg.Push(), ibtn1, isldr, ibtn2, ispn])
